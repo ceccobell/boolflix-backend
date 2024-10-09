@@ -20,26 +20,22 @@ class AuthController extends Controller
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        try {
-            $user = User::create([
-                'name' => $validatedData['name'],
-                'email' => $validatedData['email'],
-                'password' => Hash::make($validatedData['password']),
-            ]);
+        $user = User::create([
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'password' => Hash::make($validatedData['password']),
+        ]);
 
-            // Genera un token personale
-            $token = $user->createToken('auth_token')->plainTextToken;
+        // Genera un token personale
+        $token = $user->createToken('auth_token')->plainTextToken;
 
-            return response()->json([
-                'message' => 'User registered successfully',
-                'access_token' => $token,
-                'token_type' => 'Bearer'
-            ], 201);
-        } catch (\Exception $e) {
-            // Gestione dell'eccezione
-            return response()->json(['error' => 'Unable to register user'], 500);
-        }
+        // Restituisci il token nella risposta
+        return response()->json([
+            'message' => 'User registered successfully',
+            'token' => $token, // Aggiungi il token alla risposta
+        ], 201);
     }
+
 
     /**
      * Effettua il login dell'utente.
