@@ -8,7 +8,14 @@ use Illuminate\Support\Facades\Auth;
 
 class FavoriteController extends Controller
 {
-    // Aggiungi un elemento ai preferiti
+    public function getUserFavorites()
+    {
+        $userId = Auth::id();
+        $favorites = Favorite::where('user_id', $userId)->get();
+
+        return response()->json($favorites);
+    }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -25,13 +32,6 @@ class FavoriteController extends Controller
         return response()->json(['message' => 'Aggiunto ai preferiti con successo!', 'favorite' => $favorite], 201);
     }
 
-    // Mostra i preferiti dell'utente
-    public function index()
-    {
-        $favorites = Auth::user()->favorites;
-
-        return response()->json($favorites);
-    }
 
     // Rimuovi un elemento dai preferiti
     public function destroy($id)
